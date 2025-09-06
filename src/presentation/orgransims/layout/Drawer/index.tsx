@@ -166,6 +166,19 @@ const Drawer: React.FC = () => {
   const sidebarSectionsSettings: SidebarSection[] = useMemo(
     () => [
       {
+        name: "Content to reel",
+        isFolder: false,
+        link: ROUTES.CONTENT_TO_REEL,
+        isActive: ROUTES.CONTENT_TO_REEL === location.pathname,
+        isOpen: false,
+        icon: (
+          <LibraryBooksIcon
+            fontSize="large"
+            sx={{ color: theme.palette.neutral.main }}
+          />
+        ),
+      },
+      {
         name: "Content",
         isFolder: false,
         link: ROUTES.CONTENT,
@@ -196,19 +209,6 @@ const Drawer: React.FC = () => {
         isFolder: false,
         link: ROUTES.QUIZES,
         isActive: ROUTES.QUIZES === location.pathname,
-        isOpen: false,
-        icon: (
-          <LibraryBooksIcon
-            fontSize="large"
-            sx={{ color: theme.palette.neutral.main }}
-          />
-        ),
-      },
-      {
-        name: "Content to reel",
-        isFolder: false,
-        link: ROUTES.CONTENT_TO_REEL,
-        isActive: ROUTES.CONTENT_TO_REEL === location.pathname,
         isOpen: false,
         icon: (
           <LibraryBooksIcon

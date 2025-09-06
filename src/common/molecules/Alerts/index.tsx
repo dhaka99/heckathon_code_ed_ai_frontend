@@ -52,7 +52,7 @@ const AlertSnackbar: React.FC = () => {
   return (
     <Snackbar
       open={show}
-      autoHideDuration={alertExpirationonTime}
+      autoHideDuration={alertExpirationonTime || 3000}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
       onClose={closeSnackbar}
     >
