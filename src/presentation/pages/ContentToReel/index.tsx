@@ -5,9 +5,7 @@ import CustomCard from "../../../common/atoms/CustomCard";
 import CustomButton from "../../../common/atoms/CustomButton";
 import Snackbar from "../../../common/atoms/Snackbar";
 import InfoIcon from "@mui/icons-material/Info";
-import ImageCarousel, {
-  ImageItem,
-} from "../../../common/components/ImageCarousel";
+import ImageCarousel from "../../../common/components/ImageCarousel";
 
 const videoReels = [
   {
@@ -17,24 +15,24 @@ const videoReels = [
     src: "/reels_output/reel_02/reel_02.mp4",
   },
   {
-    src: "/public/reels_output/reel_03/reel_03.mp4",
+    src: "/reels_output/reel_03/reel_03.mp4",
   },
   {
-    src: "/public/reels_output/reel_04/reel_04.mp4",
+    src: "/reels_output/reel_04/reel_04.mp4",
   },
   {
-    src: "/public/reels_output/reel_05/reel_05.mp4",
+    src: "/reels_output/reel_05/reel_05.mp4",
   },
 ];
 const pdfReels = [
   {
-    src: "/public/pdf_reels_output/reel_01/reel_01.mp4",
+    src: "/pdf_reels_output/reel_01/reel_01.mp4",
   },
   {
-    src: "/public/pdf_reels_output/reel_02/reel_02.mp4",
+    src: "/pdf_reels_output/reel_02/reel_02.mp4",
   },
   {
-    src: "/public/pdf_reels_output/reel_03/reel_03.mp4",
+    src: "/pdf_reels_output/reel_03/reel_03.mp4",
   },
 ];
 
@@ -44,13 +42,6 @@ const ContentToReel: React.FC = () => {
     () => (contentType === "video" ? videoReels : pdfReels),
     [contentType]
   );
-  const [reelIdx, setReelIdx] = useState(0);
-
-  const canPrev = reelIdx > 0;
-  const canNext = reelIdx < reels.length - 1;
-
-  const goPrev = () => setReelIdx((i) => Math.max(0, i - 1));
-  const goNext = () => setReelIdx((i) => Math.min(reels.length - 1, i + 1));
 
   return (
     <Div display="flex" gap="24px" flexWrap="wrap" flexDirection="column">
