@@ -1,0 +1,19 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 5050,
+    host: "0.0.0.0",
+  },
+  preview: {
+    port: 5050,
+    host: "0.0.0.0",
+    allowedHosts: [],
+  },
+  define: {
+    "import.meta.env.VITE_BUILD_VERSION": JSON.stringify(Date.now()),
+  },
+});
