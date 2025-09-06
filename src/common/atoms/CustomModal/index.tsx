@@ -24,7 +24,6 @@ type PropTypes = {
     | "error"
     | "warning"
     | "info"
-    | "dark"
     | "success";
   Icon?: React.ElementType;
   handleClose?: () => void;
