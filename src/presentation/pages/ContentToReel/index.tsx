@@ -11,10 +11,10 @@ import ImageCarousel, {
 
 const videoReels = [
   {
-    src: "/public/reels_output/reel_01/reel_01.mp4",
+    src: "/reels_output/reel_01/reel_01.mp4",
   },
   {
-    src: "/public/reels_output/reel_02/reel_02.mp4",
+    src: "/reels_output/reel_02/reel_02.mp4",
   },
   {
     src: "/public/reels_output/reel_03/reel_03.mp4",
