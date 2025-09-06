@@ -46,7 +46,14 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
 }) => {
   const theme = useTheme();
   return (
-    <Box>
+    <Box
+      sx={{
+        background: alpha(theme.palette.primary.main, 0.9),
+        border: `1px solid  ${alpha(theme.palette.neutral.main, 0.18)}`,
+        borderRadius: 2,
+        backdropFilter: "blur(12px)",
+      }}
+    >
       <ListItem disablePadding>
         {section.isFolder ? (
           <ListItemButton
@@ -99,7 +106,7 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
             >
               {section.icon && <ListItemIcon>{section.icon}</ListItemIcon>}
               <ListItemText>
-                <Typography variant="body1" color="neutral.main">
+                <Typography variant="h3Medium" color="neutral.main" sx={{fontSize:"1.2rem"}}>
                   {section.name}
                 </Typography>
               </ListItemText>
@@ -136,8 +143,9 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
                     }
                   >
                     <Typography
-                      variant="body1"
+                      variant="h3Medium"
                       color="neutral.main"
+                      sx={{fontSize:"1.2rem"}}
                       paddingLeft={7}
                     >
                       {item.name}
@@ -157,25 +165,50 @@ const Drawer: React.FC = () => {
   const location = useLocation();
   const sidebarSectionsSettings: SidebarSection[] = useMemo(
     () => [
-      // {
-      //   name: "Dashboard",
-      //   isFolder: false,
-      //   icon: (
-      //     <LibraryBooksIcon
-      //       fontSize='large'
-      //       sx={{ color: theme.palette.neutral.main }}
-      //     />
-      //   ),
-      //   link: "/dashboard",
-      //   iconName: "library_books",
-      //   isOpen: false,
-      //   isActive: false,
-      // },
       {
-        name: "Quiz",
+        name: "Content",
         isFolder: false,
-        link: ROUTES.QUIZ,
-        isActive: ROUTES.QUIZ === location.pathname,
+        link: ROUTES.CONTENT,
+        isActive: ROUTES.CONTENT === location.pathname,
+        isOpen: false,
+        icon: (
+          <LibraryBooksIcon
+            fontSize="large"
+            sx={{ color: theme.palette.neutral.main }}
+          />
+        ),
+      },
+      {
+        name:"Micro Learning",
+        isFolder: false,
+        link: ROUTES.MICRO_LEARNING,
+        isActive: ROUTES.MICRO_LEARNING === location.pathname,
+        isOpen: false,
+        icon: (
+          <LibraryBooksIcon
+            fontSize="large"
+            sx={{ color: theme.palette.neutral.main }}
+          />
+        ),
+      },
+      {
+        name: "Quizzes",
+        isFolder: false,
+        link: ROUTES.QUIZES,
+        isActive: ROUTES.QUIZES === location.pathname,
+        isOpen: false,
+        icon: (
+          <LibraryBooksIcon
+            fontSize="large"
+            sx={{ color: theme.palette.neutral.main }}
+          />
+        ),
+      },
+      {
+        name: "Content to reel",
+        isFolder: false,
+        link: ROUTES.CONTENT_TO_REEL,
+        isActive: ROUTES.CONTENT_TO_REEL === location.pathname,
         isOpen: false,
         icon: (
           <LibraryBooksIcon
@@ -237,14 +270,13 @@ const Drawer: React.FC = () => {
         flexDirection: "column",
         gap: "24px",
       }}
-      minWidth={350}
+      minWidth={300}
     >
       <List
         sx={{
-          background: alpha(theme.palette.primary.main, 0.9),
-          border: `1px solid  ${alpha(theme.palette.neutral.main, 0.18)}`,
-          borderRadius: 2,
-          backdropFilter: "blur(12px)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
         }}
       >
         {sidebarSections.map((section, index) => (

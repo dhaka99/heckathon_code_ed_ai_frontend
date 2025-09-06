@@ -1,0 +1,8 @@
+1
+00:00:00,000 --> 00:00:02,000
+We live in a truly digital world.
+
+2
+00:00:02,340 --> 00:00:09,080
+Businesses across the globe are marching towards a digital age and really need to transform themselves in order to stay relevant.
+

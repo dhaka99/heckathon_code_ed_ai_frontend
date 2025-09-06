@@ -1,9 +1,11 @@
 import { combineReducers, type UnknownAction } from "@reduxjs/toolkit";
 import alertReducer from "./slices/alertSlice.ts";
 import authReducer from "./slices/authSlice.ts";
+import contentReducer from "./slices/contentSlice.ts";
 const appReducer = combineReducers({
   alert: alertReducer,
   auth: authReducer,
+  content: contentReducer,
 });
 
 const rootReducer = (

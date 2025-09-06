@@ -31,7 +31,7 @@ const Layout: React.FC = () => {
         <Div
           component='main'
           sx={{ overflow: "auto" }}
-          padding='12px'
+          padding='20px'
           width={"100%"}
         >
           <Outlet />

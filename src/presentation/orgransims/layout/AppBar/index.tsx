@@ -17,7 +17,7 @@ const AppBar: React.FC = () => {
     >
       <Div display="flex" alignItems="center">
         <Text sx={{ fontSize: "24px", fontWeight: "700" }}>
-          AI Content Management System by Fantastic Four
+          Micro Learning Platform
         </Text>
       </Div>
     </StyledAppBar>

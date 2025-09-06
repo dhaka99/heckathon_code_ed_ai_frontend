@@ -3,7 +3,12 @@ export const ROUTES = {
   DASHBOARD: "/dashboard",
   QUESTIONS: "/questions",
   QUESTION_DETAILS: "/questions/:id",
-  QUIZ: "/quiz",
+  QUIZES: "/quizes",
+  QUIZ_DETAILS: "/quizes/:id",
+  CONTENT: "/content",
+  MICRO_LEARNING: "/micro-learning",
+  CONTENT_TO_REEL: "/content-to-reel",
+  CONTENT_CREATION: "/content-creation",
   HOME: "/",
   NOT_FOUND: "*",
 };
