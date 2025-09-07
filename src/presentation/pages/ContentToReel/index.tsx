@@ -150,7 +150,6 @@ const ContentToReel: React.FC = () => {
                   <ImageCarousel
                     images={reels}
                     interval={3500}
-                    showIndicators
                     loop
                   />
                 ) : (

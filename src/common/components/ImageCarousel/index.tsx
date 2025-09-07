@@ -25,7 +25,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   height = "100%",
   autoPlay = false,
   interval = 3000,
-  showIndicators = true,
+  showIndicators = false,
   loop = true,
   sx,
 }) => {
