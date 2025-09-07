@@ -14,7 +14,7 @@ export const createContent = (payload: any) =>
   });
 
 export const getContentList = (payload: any) =>
-  ContenteService.get(API_ENDPOINTS.CONTENT);
+  ContenteService.get(API_ENDPOINTS.CONTENT, {params :{page: payload?.page || 0, size: payload?.size || 10}});
 
 export const getContentDetails = (id: string) =>
   ContenteService.get(API_ENDPOINTS.CONTENT_DETAILS.replace(":id", id));

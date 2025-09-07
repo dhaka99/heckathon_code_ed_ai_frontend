@@ -46,7 +46,7 @@ const Content: React.FC = () => {
   }, [contentList]);
 
   useEffect(() => {
-    dispatch(getContentListAction({}));
+    dispatch(getContentListAction({page: 0}));
   }, []);
 
   const [language, setLanguage] = useState(null);
@@ -54,12 +54,14 @@ const Content: React.FC = () => {
     navigate(ROUTES.CONTENT_CREATION);
   };
   const [pagination, setPagination] = useState({
-    totalPages: 10,
-    totalItems: 100,
-    page: 2,
+    totalPages: 0,
+    totalItems: 0,
+    page: 0,
   });
-  const handlePageChange = (page: number) => {
-    setPagination({ ...pagination, page: page });
+  const handlePageChange = (e, page) => {
+    setPagination({ ...pagination, page: page-1 });
+    dispatch(getContentListAction({page: page-1}));
+
   };
 
   const handleOnViewClick = (row?: any) => {
