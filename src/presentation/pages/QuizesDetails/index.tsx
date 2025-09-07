@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Div from "../../../common/atoms/Div";
 import Text from "../../../common/atoms/Text";
 import CustomCard from "../../../common/atoms/CustomCard";
@@ -6,6 +6,9 @@ import CustomButton from "../../../common/atoms/CustomButton";
 import { useParams } from "react-router";
 import { CardHeader } from "@mui/material";
 import BackgroundShapes from "../../../common/components/BackgroundShaps";
+import { getQuizDetailsAction } from "../../../store/slices/contentSlice";
+import useSelector from "../../../domain/useCase/common/selectorUseCase";
+import { useDispatch } from "../../../domain/useCase/common/dispatchUseCase";
 
 const OptionButton: React.FC<{
   label: string;
@@ -100,23 +103,26 @@ export const quizzesById: Record<string, QuizPayload> = {
 
 const QuizesDetails: React.FC = () => {
   const { id } = useParams();
-  const quiz = useMemo(
-    () => quizzesById[id as string] ?? quizzesById["QZ-HI-001"],
-    [id]
-  );
-
+  const dispatch = useDispatch();
+  const { quizDetails } = useSelector((state) => state.content);
+  const quiz = quizDetails || {};
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
 
-  const current = quiz.questions[idx];
+  useEffect(() => {
+    if (id) {
+      dispatch(getQuizDetailsAction(id));
+    }
+  }, [id]);
+  const current = quiz?.questions?.[idx];
 
   const goPrev = () => {
-    setIdx((i)=> Math.max(i - 1, 0));
+    setIdx((i) => Math.max(i - 1, 0));
   };
 
   const goNext = () => {
-    setIdx((i) => Math.min(i + 1, quiz.questions.length - 1));
+    setIdx((i) => Math.min(i + 1, quiz?.questions.length - 1));
   };
   const finishQuiz = () => {
     setDone(true);
@@ -130,10 +136,9 @@ const QuizesDetails: React.FC = () => {
 
   const handleSelect = (label: string) => {
     setAnswers((prev) => ({ ...prev, [current.id]: label }));
-    
   };
 
-  if (!quiz) {
+  if (!Object.keys(quiz).length) {
     return (
       <Div p={2}>
         <Text>Quiz not found.</Text>
@@ -151,30 +156,31 @@ const QuizesDetails: React.FC = () => {
         gap="12px"
       >
         <Text variant="h5" color="primary">
-          {quiz.title}
+          {quiz?.title}
         </Text>
         <Text variant="body2">
-          Question {Math.min(idx + 1, quiz.questions.length)} /{" "}
-          {quiz.questions.length}
+          Question {Math.min(idx + 1, quiz.questions?.length)} /{" "}
+          {quiz?.questions?.length}
         </Text>
       </Div>
 
       <CustomCard sx={{ padding: "24px", position: "relative" }}>
-      {/* <BackgroundShapes/> */}
+        {/* <BackgroundShapes/> */}
         {!done ? (
           <Div display="flex" flexDirection="column" gap="16px">
-            <Text variant="h6">{current.question}</Text>
+            <Text variant="h6">{current?.question}</Text>
 
             <Div display="flex" flexDirection="column" gap="16px">
-              {current.options.map((opt) => (
-                <OptionButton
-                  key={opt.label}
-                  label={opt.label}
-                  text={opt.text}
-                  selected={answers[current.id] === opt.label}
-                  onClick={() => handleSelect(opt.label)}
-                />
-              ))}
+              {current?.options &&
+                current?.options.map((opt) => (
+                  <OptionButton
+                    key={opt.label}
+                    label={opt.label}
+                    text={opt.text}
+                    selected={answers[current.id] === opt.label}
+                    onClick={() => handleSelect(opt.label)}
+                  />
+                ))}
             </Div>
           </Div>
         ) : (
@@ -193,28 +199,28 @@ const QuizesDetails: React.FC = () => {
         )}
       </CustomCard>
       <Div display="flex" justifyContent="flex-end" gap="16px">
-        {done ? null : <CustomButton
-          variant="contained"
-          color="primary"
-          disabled={idx === 0}
-          onClick={goPrev}
-        >
-          Previous
-        </CustomButton>}
-        {done ? null : <CustomButton
-          variant="contained"
-          color="primary"
-          onClick={goNext}
-          disabled={idx === quiz.questions.length - 1}
-        >
-          Next
-        </CustomButton>}
+        {done ? null : (
+          <CustomButton
+            variant="contained"
+            color="primary"
+            disabled={idx === 0}
+            onClick={goPrev}
+          >
+            Previous
+          </CustomButton>
+        )}
+        {done ? null : (
+          <CustomButton
+            variant="contained"
+            color="primary"
+            onClick={goNext}
+            disabled={idx === quiz?.questions?.length - 1}
+          >
+            Next
+          </CustomButton>
+        )}
 
-        <CustomButton
-          variant="contained"
-          color="primary"
-          onClick={restartQuiz}
-        >
+        <CustomButton variant="contained" color="primary" onClick={restartQuiz}>
           Restart Quiz
         </CustomButton>
       </Div>

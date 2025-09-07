@@ -5,9 +5,10 @@ export const ROUTES = {
   QUESTION_DETAILS: "/questions/:id",
   QUIZES: "/quizes",
   QUIZ_DETAILS: "/quizes/:id",
-  CONTENT: "/",
+  CONTENT: "/content",
   MICRO_LEARNING: "/micro-learning",
-  CONTENT_TO_REEL: "/content-to-reel",
+  CONTENT_TO_REEL: "/",
   CONTENT_CREATION: "/content-creation",
+  CONTENT_DETAILS: "/content/:id",
   NOT_FOUND: "*",
 };

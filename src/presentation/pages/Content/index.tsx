@@ -14,12 +14,40 @@ import { quizData } from "../../../mocks/quizData";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import QuizOutlinedIcon from "@mui/icons-material/QuizOutlined";
 import { contentData } from "../../../mocks/contentData";
-import { contentSummarizationAction } from "../../../store/slices/contentSlice";
-import { useDispatch } from "react-redux";
+import {
+  contentSummarizationAction,
+  createQuizAction,
+  getContentListAction,
+} from "../../../store/slices/contentSlice";
+import { useDispatch, useSelector } from "react-redux";
+import CommonModal from "../../../common/atoms/CommonModal";
+import CustomAutocomplete from "../../../common/molecules/CustomAutocomplete";
+import { languageOptions } from "../../../mocks/lang";
+import CustomFormControl from "../../../common/atoms/CustomFormControl";
 
 const Content: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [open, setOpen] = useState({
+    contentSummarization: false,
+    contentToQuiz: false,
+  });
+  const [selectedContent, setSelectedContent] = useState<any>(null);
+  const { contentList } = useSelector((state) => state.content);
+  console.log("contentList", contentList);
+  useEffect(() => {
+    setPagination({
+      totalPages: contentList?.totalPages,
+      totalItems: contentList?.totalItems,
+      page: contentList?.pageNumber,
+    });
+  }, [contentList]);
+
+  useEffect(() => {
+    dispatch(getContentListAction({}));
+  }, []);
+
+  const [language, setLanguage] = useState(null);
   const handleOnAddContent = () => {
     navigate(ROUTES.CONTENT_CREATION);
   };
@@ -31,30 +59,51 @@ const Content: React.FC = () => {
   const handlePageChange = (page: number) => {
     setPagination({ ...pagination, page: page });
   };
-  
+
   const handleOnViewClick = (row?: any) => {
-    console.log("view details", row);
+    navigate(ROUTES.CONTENT_DETAILS.replace(":id", row?.id));
   };
 
-  const handleCreateNotes = (row?: any) => {
-    navigate(ROUTES.CONTENT_CREATION);
+  const handleOnModalCreateNotesOpen = (row?: any) => {
+    setOpen({ ...open, contentSummarization: true });
+    setSelectedContent(row);
+  };
+  const handleCreateNotes = async (row?: any) => {
+    const result = await dispatch(
+      contentSummarizationAction({
+        contentId: selectedContent?.id,
+        language: language?.value || "en",
+        length: 100,
+        generateThumbnail: true,
+      })
+    );
+    if (contentSummarizationAction.fulfilled.match(result)) {
+      navigate(ROUTES.MICRO_LEARNING);
+    }
   };
 
-  const handleCreateQuiz = (row?: any) => {
-    navigate(ROUTES.QUIZES);
+  const handleOnModalCreateQuizOpen = (row?: any) => {
+    setOpen({ ...open, contentToQuiz: true });
+    setSelectedContent(row);
+  };
+  const handleCreateQuiz = async(row?: any) => {
+    const result = await dispatch(
+      createQuizAction({
+        contentId: selectedContent?.id,
+        language: language?.label?.toUpperCase() || "ENGLISH",
+        questionType: "mcq",
+        numQuestions: 5,
+        difficulty: "EASY",
+      })
+    );
+    if (createQuizAction.fulfilled.match(result)) {
+      navigate(ROUTES.QUIZES);
+    }
   };
 
-  useEffect(() => {
-    dispatch(contentSummarizationAction({
-      content: "content",
-      language: "language",
-      length: 100,
-      generateThumbnail: true,
-    }));
-  }, []);
   const tableColumns = [
     {
-      key: "contentId",
+      key: "id",
       header: (
         <Text variant="body1Medium" color="primary" whiteSpace={"nowrap"}>
           Content ID
@@ -63,7 +112,7 @@ const Content: React.FC = () => {
       sx: { width: "160px" },
     },
     {
-      key: "contentTitle",
+      key: "fileName",
       header: (
         <Text variant="body1Medium" color="primary" whiteSpace={"nowrap"}>
           Content Title
@@ -83,14 +132,14 @@ const Content: React.FC = () => {
           <CustomButton
             size="small"
             variant="outlined"
-            onClick={() => handleCreateNotes(row)}
+            onClick={() => handleOnModalCreateNotesOpen(row)}
           >
             <NoteAddOutlinedIcon fontSize="small" /> <span>Create Notes</span>
           </CustomButton>
           <CustomButton
             size="small"
             variant="outlined"
-            onClick={() => handleCreateQuiz(row)}
+            onClick={() => handleOnModalCreateQuizOpen(row)}
           >
             <QuizOutlinedIcon fontSize="small" /> <span>Create Quiz</span>
           </CustomButton>
@@ -106,7 +155,11 @@ const Content: React.FC = () => {
       sx: { width: "380px" },
     },
   ];
- 
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Div display="flex" gap="24px" flexDirection="column">
       <Div
@@ -132,7 +185,7 @@ const Content: React.FC = () => {
       <CustomCard sx={{ padding: 0 }}>
         <CustomTable
           columns={tableColumns}
-          data={contentData}
+          data={contentList?.data || []}
           paginationComponent={
             <CustomPagination
               pagination={pagination}
@@ -142,6 +195,77 @@ const Content: React.FC = () => {
           noDataMessage="No Data Found"
         />
       </CustomCard>
+      
+      {open.contentSummarization && (
+        <CommonModal
+          open={open.contentSummarization}
+          onBackdropClick={onClose}
+          onClose={onClose}
+          maxWidth="512px"
+        >
+          <Div display="flex" gap="16px" flexDirection={"column"}>
+            <Text variant="h3Bold" color="primary.main">
+              Select Language
+            </Text>
+            <CustomFormControl sx={{width: "100%"}}>
+              <CustomAutocomplete
+                value={language}
+                onChange={setLanguage}
+                valueKey="value"
+                labelKey="label"
+                options={languageOptions}
+                sx={{width: "100%"}}
+              />
+            </CustomFormControl>
+
+            <Div display="flex" justifyContent="flex-end" gap="8px">
+              <CustomButton
+                variant="contained"
+                size="large"
+                disabled={!language}
+                onClick={handleCreateNotes}
+              >
+                Generate Summary Notes
+              </CustomButton>
+            </Div>
+          </Div>
+        </CommonModal>
+      )}
+      {open.contentToQuiz && (
+        <CommonModal
+          open={open.contentToQuiz}
+          onBackdropClick={onClose}
+          onClose={onClose}
+          maxWidth="512px"
+        >
+          <Div display="flex" gap="16px" flexDirection={"column"}>
+            <Text variant="h3Bold" color="primary.main">
+              Select Language
+            </Text>
+            <CustomFormControl sx={{width: "100%"}}>
+              <CustomAutocomplete
+                value={language}
+                onChange={setLanguage}
+                valueKey="value"
+                labelKey="label"
+                options={languageOptions}
+                sx={{width: "100%"}}
+              />
+            </CustomFormControl>
+
+            <Div display="flex" justifyContent="flex-end" gap="8px">
+              <CustomButton
+                variant="contained"
+                size="large"
+                disabled={!language}
+                onClick={handleCreateQuiz}
+              >
+                Generate Quizz
+              </CustomButton>
+            </Div>
+          </Div>
+        </CommonModal>
+      )}
     </Div>
   );
 };

@@ -11,7 +11,8 @@ type PropTypes = {
   onBackdropClick?: () => void;
   containerProps?: BoxProps;
   closeIconButtonProps?: IconButtonProps;
-  slotProps?: React.ComponentProps<typeof Modal>["slotProps"];
+  maxWidth?: string;
+  maxHeight?: string;
 };
 
 const CommonModal: React.FC<PropTypes> = (props) => {
@@ -23,7 +24,8 @@ const CommonModal: React.FC<PropTypes> = (props) => {
     onBackdropClick,
     containerProps,
     closeIconButtonProps,
-    slotProps,
+    maxWidth = "90%",
+    maxHeight = "90%",
   } = props;
   return (
     <Modal
@@ -31,7 +33,6 @@ const CommonModal: React.FC<PropTypes> = (props) => {
       onClose={onBackdropClick}
       disableAutoFocus
       disableRestoreFocus
-      slotProps={slotProps}
     >
       <Div
         position='absolute'
@@ -42,6 +43,10 @@ const CommonModal: React.FC<PropTypes> = (props) => {
         border={(theme) => `1px solid ${theme.palette.neutral[400]}`}
         boxShadow={24}
         p={3}
+        pt={4}
+        minWidth={"50%"}
+        maxWidth={maxWidth}
+        maxHeight={maxHeight}
         sx={{
           transform: "translate(-50%, -50%)",
           ...containerProps?.sx,
@@ -64,7 +69,6 @@ const CommonModal: React.FC<PropTypes> = (props) => {
             <CloseIcon fontSize='small' />
           </CustomIconButton>
         )}
-
         {children}
       </Div>
     </Modal>

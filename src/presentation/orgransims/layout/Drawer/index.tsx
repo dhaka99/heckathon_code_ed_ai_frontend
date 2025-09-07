@@ -166,7 +166,7 @@ const Drawer: React.FC = () => {
   const sidebarSectionsSettings: SidebarSection[] = useMemo(
     () => [
       {
-        name: "Content to reel",
+        name: "Edu Reels",
         isFolder: false,
         link: ROUTES.CONTENT_TO_REEL,
         isActive: ROUTES.CONTENT_TO_REEL === location.pathname,
@@ -192,7 +192,7 @@ const Drawer: React.FC = () => {
         ),
       },
       {
-        name:"Micro Learning",
+        name:"Micro Learning (Notes)",
         isFolder: false,
         link: ROUTES.MICRO_LEARNING,
         isActive: ROUTES.MICRO_LEARNING === location.pathname,

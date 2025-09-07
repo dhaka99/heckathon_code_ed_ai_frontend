@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Div from "../../../common/atoms/Div";
 import Text from "../../../common/atoms/Text";
 import CustomButton from "../../../common/atoms/CustomButton";
@@ -7,8 +7,17 @@ import CustomTable from "../../../common/molecules/CustomTable";
 import { contentData } from "../../../mocks/contentData";
 import CustomPagination from "../../../common/molecules/CustomPagination";
 import FlipCard from "../../../common/components/FlipCard";
+import { useDispatch } from "../../../domain/useCase/common/dispatchUseCase";
+import useSelector from "../../../domain/useCase/common/selectorUseCase";
+import { getSummaryListAction } from "../../../store/slices/contentSlice";
 
 const MicroLearning: React.FC = () => {
+  const dispatch = useDispatch();
+  const { summaryList } = useSelector((state) => state.content);
+  useEffect(() => {
+    dispatch(getSummaryListAction());
+  }, []);
+  console.log(summaryList);
   return (
     <Div display="flex" gap="24px" flexDirection="column">
       <Div
@@ -24,11 +33,11 @@ const MicroLearning: React.FC = () => {
         </Text>
       </Div>
       
-      <Div display="flex" gap="24px" flexDirection="row" flexWrap={"wrap"}>
-        {contentData.map((card) => (
+      <Div display="flex" gap="34px" flexDirection="row" flexWrap={"wrap"}>
+        {summaryList?.length > 0 ? summaryList?.map((card) => (
           <FlipCard
-            title={card.contentTitle}
-            summary={card.contentSummary}
+            title={card.title}
+            summary={card.summary}
             sx={{
               width: "300px",
               height: "300px",
@@ -36,7 +45,7 @@ const MicroLearning: React.FC = () => {
               justifyContent: "center",
             }}
           ></FlipCard>
-        ))}
+        )): null}
       </Div>
     </Div>
   );

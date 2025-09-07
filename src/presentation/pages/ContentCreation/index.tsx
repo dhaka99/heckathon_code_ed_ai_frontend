@@ -13,6 +13,7 @@ import CustomButton from "../../../common/atoms/CustomButton";
 import { FileRejection } from "react-dropzone";
 import { useNavigate } from "react-router";
 import { ROUTES } from "../../../constants";
+import { createContentAction } from "../../../store/slices/contentSlice";
 
 const ContentCreation: React.FC = () => {
   const [files, setFiles] = useState<FileWithId[]>([]);
@@ -64,7 +65,7 @@ const ContentCreation: React.FC = () => {
   const handleOnSave = () => {
     const fileData = new FormData();
     fileData.append("file", files[0]);
-    // dispatch(uploadExemptExamFeeListAction({ formData: fileData }));
+    dispatch(createContentAction({ file: fileData }));
   };
   return (
     <Div display="flex" gap="24px" flexDirection="column">

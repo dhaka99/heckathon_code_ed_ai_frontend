@@ -3,6 +3,20 @@ import Div from "../../atoms/Div";
 import Text from "../../atoms/Text";
 import { SxProps } from "@mui/material";
 
+export const truncate = (
+    s: string,
+    max = 250,
+    wordSafe = true,
+    ellipsis = "…"
+  ) => {
+    if (!s) return "";
+    if (s.length <= max) return s;
+    const cut = s.slice(0, max);
+    const trimmed = wordSafe ? cut.replace(/\s+\S*$/, "") : cut;
+    return `${trimmed}${ellipsis}`;
+  };
+  
+  // usage 
 const FlipCard: React.FC<{ title: string; summary: string; sx?: SxProps }> = ({
   title,
   summary,
@@ -68,7 +82,7 @@ const FlipCard: React.FC<{ title: string; summary: string; sx?: SxProps }> = ({
           }}
         >
           <Text variant="body1" textAlign="center">
-            {summary}
+            {truncate(summary)}
           </Text>
         </Div>
       </Div>

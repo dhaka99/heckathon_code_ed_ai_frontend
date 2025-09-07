@@ -10,6 +10,7 @@ import Content from "../presentation/pages/Content/index.tsx";
 import MicroLearning from "../presentation/pages/MicroLearning/index.tsx";
 import ContentToReel from "../presentation/pages/ContentToReel/index.tsx";
 import ContentCreation from "../presentation/pages/ContentCreation/index.tsx";
+import ContentDetails from "../presentation/pages/ContentDetails/index.tsx";
 
 const NotFoundPage = lazy(() => import("../presentation/pages/404/index.tsx"));
 
@@ -19,12 +20,14 @@ const AllRoutes = () => (
     <Route path='/' element={<Layout />}>
       <Route path={ROUTES.CONTENT} element={<Content />} />
       <Route path={ROUTES.CONTENT_CREATION} element={<ContentCreation />} />
+      <Route path={ROUTES.CONTENT_DETAILS} element={<ContentDetails />} />
       <Route path={ROUTES.MICRO_LEARNING} element={<MicroLearning />} />
       <Route path={ROUTES.CONTENT_TO_REEL} element={<ContentToReel />} />
       <Route path={ROUTES.QUESTIONS} element={<Questions />} />
       <Route path={ROUTES.QUESTION_DETAILS} element={<QuestionDetails />} />
       <Route path={ROUTES.QUIZES} element={<Quizes />} />
       <Route path={ROUTES.QUIZ_DETAILS} element={<QuizesDetails />} />
+
     </Route>
     <Route path='*' element={<NotFoundPage />} />
   </Routes>

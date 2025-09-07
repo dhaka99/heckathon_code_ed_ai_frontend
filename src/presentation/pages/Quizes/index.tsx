@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Div from "../../../common/atoms/Div";
 import Text from "../../../common/atoms/Text";
 import CustomCard from "../../../common/atoms/CustomCard";
@@ -10,21 +10,23 @@ import { quizData } from "../../../mocks/quizData";
 import CustomButton from "../../../common/atoms/CustomButton";
 import CustomChip from "../../../common/atoms/CustomChip";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import useSelector from "../../../domain/useCase/common/selectorUseCase";
+import { getQuizListAction } from "../../../store/slices/contentSlice";
 
 const Quizes: React.FC = () => {
   const navigate = useNavigate();
-  const [pagination, setPagination] = useState({
-    totalPages: 10,
-    totalItems: 100,
-    page: 2,
-  });
-  const handlePageChange = (page: number) => {
-    setPagination({ ...pagination, page: page });
-  };
+  const dispatch = useDispatch();
+  const { quizList } = useSelector((state) => state.content);
+  
 
   const handleOnViewClick = (row: any) => {
-    navigate(`/quizes/${row.quizId}`);
-  };
+    navigate(`/quizes/${row?.quiz?.quizId}`);
+  };  
+
+  useEffect(() => {
+    dispatch(getQuizListAction({}));
+  }, []);
 
   const tableColumns = [
     {
@@ -34,6 +36,9 @@ const Quizes: React.FC = () => {
           Quiz ID
         </Text>
       ),
+      render: (row: any) => {
+        return <Text variant="body1Medium"  whiteSpace={"nowrap"}>{row?.quiz?.quizId}</Text>;
+      },
     },
     {
       key: "quizTitle",
@@ -42,14 +47,9 @@ const Quizes: React.FC = () => {
           Quiz Title
         </Text>
       ),
-    },
-    {
-      key: "quizSummary",
-      header: (
-        <Text variant="body1Medium" color="primary" whiteSpace={"nowrap"}>
-          Quiz Summary
-        </Text>
-      ),
+      render: (row: any) => {
+        return <Text variant="body1Medium"  whiteSpace={"nowrap"}>{row?.quiz?.title}</Text>;
+      },
     },
     {
       key: "noOfQuestions",
@@ -58,6 +58,9 @@ const Quizes: React.FC = () => {
           No. of Questions
         </Text>
       ),
+      render: (row: any) => {
+        return <Text variant="body1Medium" color="primary" whiteSpace={"nowrap"}>{row?.quiz?.questions?.length}</Text>;
+      },
       sx: { width: "140px" },
     },
     {
@@ -69,18 +72,10 @@ const Quizes: React.FC = () => {
       ),
       sx: { width: "140px" },
       render: (row: any) => {
-        return <CustomChip label={row.quizType} />;
+        return <CustomChip label={"MCQ"} />;
       },
     },
-    {
-      key: "maxMarks",
-      header: (
-        <Text variant="body1Medium" color="primary" whiteSpace={"nowrap"}>
-          Max Marks
-        </Text>
-      ),
-      sx: { width: "120px" },
-    },
+    
     {
       key: "actions",
       stickyRight: true,
@@ -117,13 +112,13 @@ const Quizes: React.FC = () => {
       <CustomCard sx={{ padding: 0 }}>
         <CustomTable
           columns={tableColumns}
-          data={quizData}
-          paginationComponent={
-            <CustomPagination
-              pagination={pagination}
-              handlePageChange={handlePageChange}
-            />
-          }
+          data={quizList?.data || []}
+          // paginationComponent={
+          //   <CustomPagination
+          //     pagination={pagination}
+          //     handlePageChange={handlePageChange}
+          //   />
+          // }
           noDataMessage="No Data Found"
         />
       </CustomCard>

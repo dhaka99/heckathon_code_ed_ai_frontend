@@ -57,7 +57,7 @@ const ContentToReel: React.FC = () => {
             gap="12px"
           >
             <Text variant="h5" color="primary">
-              Content
+              Edu Reels
             </Text>
             <Div display="flex" gap="8px">
               <CustomButton
