@@ -9,17 +9,21 @@ import BackgroundShapes from "../../../common/components/BackgroundShaps";
 import { getQuizDetailsAction } from "../../../store/slices/contentSlice";
 import useSelector from "../../../domain/useCase/common/selectorUseCase";
 import { useDispatch } from "../../../domain/useCase/common/dispatchUseCase";
+import CommonModal from "../../../common/atoms/CommonModal";
+import CustomFormControl from "../../../common/atoms/CustomFormControl";
+import CustomSkeleton from "../../../common/atoms/CustomSkeleton";
 
 const OptionButton: React.FC<{
   label: string;
   text: string;
   selected: boolean;
+  correct: boolean;
   onClick: () => void;
-}> = ({ label, text, selected, onClick }) => {
+}> = ({ label, text, selected, correct, onClick }) => {
   return (
     <CustomButton
       variant={selected ? "contained" : "outlined"}
-      color={selected ? "primary" : "secondary"}
+      color={selected ? (correct ? "success" : "error") : "secondary"}
       onClick={onClick}
       sx={{ justifyContent: "flex-start", width: "100%", padding: "8px 16px" }}
     >
@@ -52,63 +56,16 @@ export type QuizPayload = {
   questions: QuizQuestion[];
 };
 
-// Map the Hindi quiz to an id so we can route to it (use any id you prefer)
-export const quizzesById: Record<string, QuizPayload> = {
-  "QZ-HI-001": {
-    quizId: "QZ-HI-001",
-    title: "कृत्रिम बुद्धिमत्ता पर परीक्षा",
-    questions: [
-      {
-        id: "q1",
-        question: "कृत्रिम बुद्धिमत्ता का मुख्य कार्य क्या है?",
-        options: [
-          { label: "A", text: "स्वचालित कार्यों को करना" },
-          { label: "B", text: "डेटा को विश्लेषित करना" },
-          { label: "C", text: "निर्णय लेना" },
-          { label: "D", text: "संचार करना" },
-        ],
-        correct_answer: "A",
-        explanation:
-          "कृत्रिम बुद्धिमत्ता का मुख्य कार्य स्वचालित कार्यों को करना है, जैसे कि डेटा को विश्लेषित करना, निर्णय लेना, और संचार करना।",
-      },
-      {
-        id: "q2",
-        question: "कृत्रिम बुद्धिमत्ता का उपयोग किस क्षेत्र में किया जाता है?",
-        options: [
-          { label: "A", text: "व्यापार और वित्त" },
-          { label: "B", text: "शिक्षा और स्वास्थ्य" },
-          { label: "C", text: "संचार और मनोरंजन" },
-          { label: "D", text: "सभी क्षेत्रों में" },
-        ],
-        correct_answer: "D",
-        explanation:
-          "कृत्रिम बुद्धिमत्ता का उपयोग व्यापार और वित्त, शिक्षा और स्वास्थ्य, संचार और मनोरंजन, और सभी क्षेत्रों में किया जाता है।",
-      },
-      {
-        id: "q3",
-        question: "कृत्रिम बुद्धिमत्ता का भविष्य क्या है?",
-        options: [
-          { label: "A", text: "यह पूरी तरह से विकसित हो जाएगा" },
-          { label: "B", text: "यह सीमित ही रहेगा" },
-          { label: "C", text: "यह विकसित होगा लेकिन सीमित रहेगा" },
-          { label: "D", text: "यह पूरी तरह से विकसित नहीं होगा" },
-        ],
-        correct_answer: "C",
-        explanation:
-          "कृत्रिम बुद्धिमत्ता का भविष्य यह है कि यह विकसित होगा लेकिन सीमित रहेगा, क्योंकि यह एक जटिल और विकसित क्षेत्र है।",
-      },
-    ],
-  },
-};
-
 const QuizesDetails: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { quizDetails } = useSelector((state) => state.content);
+  const { quizDetails , contentLoading} = useSelector((state) => state.content);
   const quiz = quizDetails || {};
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -145,6 +102,32 @@ const QuizesDetails: React.FC = () => {
       </Div>
     );
   }
+  const onClose = () => {
+    setOpen(false);
+  };
+  const handleOnAIExplaination = () => {
+    setOpen(true);
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  };
+
+  if(contentLoading?.getQuizDetails === "pending"){
+    return (
+      <Div p={2}>
+        <CustomSkeleton variant="text" width="100%" height="100px" />
+      </Div>
+    );
+  }
+
+  if (!Object.keys(quiz).length) {
+    return (
+      <Div p={2}>
+        <Text>Quiz not found.</Text>
+      </Div>
+    );
+  }
 
   return (
     <Div display="flex" flexDirection="column" gap="16px">
@@ -168,7 +151,23 @@ const QuizesDetails: React.FC = () => {
         {/* <BackgroundShapes/> */}
         {!done ? (
           <Div display="flex" flexDirection="column" gap="16px">
+            <Div display="flex" justifyContent="space-between" alignItems="center">
+
+            
+
             <Text variant="h6">{current?.question}</Text>
+            <CustomButton
+              variant="contained"
+              color="primary"
+              sx={{
+                width: "150px",
+                whiteSpace: "nowrap",
+              }}
+              onClick={handleOnAIExplaination}
+            >
+              AI Explaination
+            </CustomButton>
+            </Div>
 
             <Div display="flex" flexDirection="column" gap="16px">
               {current?.options &&
@@ -178,6 +177,7 @@ const QuizesDetails: React.FC = () => {
                     label={opt.label}
                     text={opt.text}
                     selected={answers[current.id] === opt.label}
+                    correct={opt.label === current?.correct_answer}
                     onClick={() => handleSelect(opt.label)}
                   />
                 ))}
@@ -224,6 +224,36 @@ const QuizesDetails: React.FC = () => {
           Restart Quiz
         </CustomButton>
       </Div>
+
+      {open && (
+        <CommonModal
+          open={open}
+          onBackdropClick={onClose}
+          onClose={onClose}
+          maxWidth="512px"
+        >
+          <Div display="flex" gap="16px" flexDirection={"column"}>
+            {loading ? (
+              <CustomSkeleton variant="text" width="80%" height="50px" />
+            ) : (
+              <Text variant="h3Bold" color="primary.main">
+                Answer: {current?.correct_answer}
+              </Text>
+            )}
+            {loading ? (
+              <CustomSkeleton variant="text" width="100%" height="100px" />
+            ) : (
+              <Text variant="body1">{current?.explanation}</Text>
+            )}
+
+            <Div display="flex" justifyContent="flex-end" gap="8px">
+              <CustomButton variant="contained" size="large" onClick={onClose}>
+                Close
+              </CustomButton>
+            </Div>
+          </Div>
+        </CommonModal>
+      )}
     </Div>
   );
 };

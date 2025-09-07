@@ -24,6 +24,8 @@ import CommonModal from "../../../common/atoms/CommonModal";
 import CustomAutocomplete from "../../../common/molecules/CustomAutocomplete";
 import { languageOptions } from "../../../mocks/lang";
 import CustomFormControl from "../../../common/atoms/CustomFormControl";
+import CustomSkeleton from "../../../common/atoms/CustomSkeleton";
+import TableSkeleton from "../../../common/skeletons/TableSkeleton";
 
 const Content: React.FC = () => {
   const navigate = useNavigate();
@@ -33,8 +35,8 @@ const Content: React.FC = () => {
     contentToQuiz: false,
   });
   const [selectedContent, setSelectedContent] = useState<any>(null);
-  const { contentList } = useSelector((state) => state.content);
-  console.log("contentList", contentList);
+  const { contentList , contentLoading} = useSelector((state) => state.content);
+  const [numQuestions, setNumQuestions] = useState(null);
   useEffect(() => {
     setPagination({
       totalPages: contentList?.totalPages,
@@ -92,7 +94,7 @@ const Content: React.FC = () => {
         contentId: selectedContent?.id,
         language: language?.label?.toUpperCase() || "ENGLISH",
         questionType: "mcq",
-        numQuestions: 5,
+        numQuestions: numQuestions?.value || 5,
         difficulty: "EASY",
       })
     );
@@ -103,7 +105,7 @@ const Content: React.FC = () => {
 
   const tableColumns = [
     {
-      key: "id",
+      key: "idx",
       header: (
         <Text variant="body1Medium" color="primary" whiteSpace={"nowrap"}>
           Content ID
@@ -133,6 +135,7 @@ const Content: React.FC = () => {
             size="small"
             variant="outlined"
             onClick={() => handleOnModalCreateNotesOpen(row)}
+            sx={{gap: "8px"}}
           >
             <NoteAddOutlinedIcon fontSize="small" /> <span>Create Notes</span>
           </CustomButton>
@@ -140,6 +143,7 @@ const Content: React.FC = () => {
             size="small"
             variant="outlined"
             onClick={() => handleOnModalCreateQuizOpen(row)}
+            sx={{gap: "8px"}}
           >
             <QuizOutlinedIcon fontSize="small" /> <span>Create Quiz</span>
           </CustomButton>
@@ -183,9 +187,12 @@ const Content: React.FC = () => {
         </CustomButton>
       </Div>
       <CustomCard sx={{ padding: 0 }}>
-        <CustomTable
+        {contentLoading?.getContentList === "pending" ? (
+          <TableSkeleton  />
+        ) : (
+          <CustomTable
           columns={tableColumns}
-          data={contentList?.data || []}
+          data={contentList?.data?.map((row, idx) => ({...row, idx: idx + 1})) || []}
           paginationComponent={
             <CustomPagination
               pagination={pagination}
@@ -194,6 +201,8 @@ const Content: React.FC = () => {
           }
           noDataMessage="No Data Found"
         />
+        )}
+        
       </CustomCard>
       
       {open.contentSummarization && (
@@ -224,6 +233,7 @@ const Content: React.FC = () => {
                 size="large"
                 disabled={!language}
                 onClick={handleCreateNotes}
+                loading={contentLoading?.contentSummarization === "pending"}
               >
                 Generate Summary Notes
               </CustomButton>
@@ -252,15 +262,31 @@ const Content: React.FC = () => {
                 sx={{width: "100%"}}
               />
             </CustomFormControl>
+            <Div>
+            <Text variant="h3Bold" color="primary.main">
+              Select Number of Questions
+            </Text>
+            <CustomFormControl sx={{width: "100%"}}>
+              <CustomAutocomplete
+                value={numQuestions}
+                onChange={setNumQuestions}
+                valueKey="value"
+                labelKey="label"
+                options={[{label: "1", value: 1}, {label: "2", value: 2}, {label: "3", value: 3}, {label: "4", value: 4}, {label: "5", value: 5}, {label: "6", value: 6}]}
+                sx={{width: "100%"}}
+              />
+            </CustomFormControl>
+            </Div>
 
             <Div display="flex" justifyContent="flex-end" gap="8px">
               <CustomButton
                 variant="contained"
                 size="large"
-                disabled={!language}
+                disabled={!language && !numQuestions}
                 onClick={handleCreateQuiz}
+                loading={contentLoading?.createQuiz === "pending"}
               >
-                Generate Quizz
+                Generate Quiz
               </CustomButton>
             </Div>
           </Div>

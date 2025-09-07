@@ -10,14 +10,14 @@ import FlipCard from "../../../common/components/FlipCard";
 import { useDispatch } from "../../../domain/useCase/common/dispatchUseCase";
 import useSelector from "../../../domain/useCase/common/selectorUseCase";
 import { getSummaryListAction } from "../../../store/slices/contentSlice";
+import CustomSkeleton from "../../../common/atoms/CustomSkeleton";
 
 const MicroLearning: React.FC = () => {
   const dispatch = useDispatch();
-  const { summaryList } = useSelector((state) => state.content);
+  const { summaryList, contentLoading } = useSelector((state) => state.content);
   useEffect(() => {
     dispatch(getSummaryListAction());
   }, []);
-  console.log(summaryList);
   return (
     <Div display="flex" gap="24px" flexDirection="column">
       <Div
@@ -32,20 +32,47 @@ const MicroLearning: React.FC = () => {
           Micro Learning (Notes)
         </Text>
       </Div>
-      
       <Div display="flex" gap="34px" flexDirection="row" flexWrap={"wrap"}>
-        {summaryList?.length > 0 ? summaryList?.map((card) => (
-          <FlipCard
-            title={card.title}
-            summary={card.summary}
-            sx={{
-              width: "300px",
-              height: "300px",
-              alignContent: "center",
-              justifyContent: "center",
-            }}
-          ></FlipCard>
-        )): null}
+        {contentLoading?.getSummaryList === "pending" ? (
+          <>
+            <CustomSkeleton
+              variant="ractangle"
+              width="300px"
+              height="300px"
+              sx={{ borderRadius: "10px" }}
+            />
+            <CustomSkeleton
+              variant="ractangle"
+              width="300px"
+              height="300px"
+              sx={{ borderRadius: "10px" }}
+            />
+            <CustomSkeleton
+              variant="ractangle"
+              width="300px"
+              height="300px"
+              sx={{ borderRadius: "10px" }}
+            />
+          </>
+        ) : (
+          <>
+            {summaryList?.length > 0
+              ? summaryList?.map((card) => (
+                  <FlipCard
+                    key={card.id}
+                    title={card.title}
+                    summary={card.summary}
+                    sx={{
+                      width: "300px",
+                      height: "300px",
+                      alignContent: "center",
+                      justifyContent: "center",
+                    }}
+                  ></FlipCard>
+                ))
+              : null}
+          </>
+        )}
       </Div>
     </Div>
   );

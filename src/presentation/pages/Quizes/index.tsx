@@ -17,7 +17,7 @@ import { getQuizListAction } from "../../../store/slices/contentSlice";
 const Quizes: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { quizList } = useSelector((state) => state.content);
+  const { quizList, contentLoading } = useSelector((state) => state.content);
   
 
   const handleOnViewClick = (row: any) => {
@@ -30,14 +30,14 @@ const Quizes: React.FC = () => {
 
   const tableColumns = [
     {
-      key: "quizId",
+      key: "idx",
       header: (
         <Text variant="body1Medium" color="primary" whiteSpace={"nowrap"}>
           Quiz ID
         </Text>
       ),
       render: (row: any) => {
-        return <Text variant="body1Medium"  whiteSpace={"nowrap"}>{row?.quiz?.quizId}</Text>;
+        return <Text variant="body1Medium"  whiteSpace={"nowrap"}>{row?.idx}</Text>;
       },
     },
     {
@@ -110,20 +110,19 @@ const Quizes: React.FC = () => {
         </Text>
       </Div>
       <CustomCard sx={{ padding: 0 }}>
-        <CustomTable
+        {contentLoading?.getQuizList === "pending" ? (
+          <TableSkeleton />
+        ) : (
+          <CustomTable
           columns={tableColumns}
-          data={quizList?.data || []}
-          // paginationComponent={
-          //   <CustomPagination
-          //     pagination={pagination}
-          //     handlePageChange={handlePageChange}
-          //   />
-          // }
+          data={quizList?.data?.map((row, idx) => ({...row, idx: idx + 1}))|| []}
+          
           noDataMessage="No Data Found"
         />
+        )}
+
       </CustomCard>
 
-      {/* <TableSkeleton/> */}
     </Div>
   );
 };

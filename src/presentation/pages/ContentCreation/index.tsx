@@ -14,12 +14,13 @@ import { FileRejection } from "react-dropzone";
 import { useNavigate } from "react-router";
 import { ROUTES } from "../../../constants";
 import { createContentAction } from "../../../store/slices/contentSlice";
+import useSelector from "../../../domain/useCase/common/selectorUseCase";
 
 const ContentCreation: React.FC = () => {
   const [files, setFiles] = useState<FileWithId[]>([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { contentLoading } = useSelector((state) => state.content);
   const config: DragAndDropConfig = {
     supportedFileTypes: {
       "text/csv": [".csv"],
@@ -117,6 +118,7 @@ const ContentCreation: React.FC = () => {
           onClick={handleOnSave}
           loadingPosition="end"
           disabled={!(files.length > 0)}
+          loading={contentLoading?.createContent === "pending"}
         >
           Save
         </CustomButton>

@@ -23,6 +23,7 @@ const contentSlice = createSlice({
       getContentDetails: "idle",
       getQuizDetails: "idle",
       createQuiz: "idle",
+      createContent: "idle",
     },
     contentList: {},
     summaryList: {},
@@ -103,6 +104,15 @@ const contentSlice = createSlice({
     builder.addCase(createQuizAction.rejected, (state) => {
       state.contentLoading.createQuiz = "failed";
     });
+    builder.addCase(createContentAction.pending, (state) => {
+      state.contentLoading.createContent = "pending";
+    });
+    builder.addCase(createContentAction.fulfilled, (state) => {
+      state.contentLoading.createContent = "succeeded";
+    });
+    builder.addCase(createContentAction.rejected, (state) => {
+      state.contentLoading.createContent = "failed";
+    });
   },
 });
 
@@ -143,7 +153,7 @@ export const contentSummarizationAction = createAsyncThunk(
 );
 
 export const createContentAction = createAsyncThunk(
-  "content/contentSummarization",
+  "content/contentContent",
   async (payload, { dispatch, rejectWithValue }) => {
     try {
       const data = await createContent(payload);
