@@ -63,10 +63,13 @@ const ContentCreation: React.FC = () => {
     );
   };
 
-  const handleOnSave = () => {
+  const handleOnSave = async () => {
     const fileData = new FormData();
     fileData.append("file", files[0]);
-    dispatch(createContentAction({ file: fileData }));
+    const result = await dispatch(createContentAction({ file: fileData }));
+    if (createContentAction.fulfilled.match(result)) {
+      navigate(ROUTES.CONTENT);
+    }
   };
   return (
     <Div display="flex" gap="24px" flexDirection="column">
