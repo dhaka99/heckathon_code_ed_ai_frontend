@@ -7,9 +7,9 @@ export const ROUTES = {
   QUIZ_DETAILS: "/quizes/:id",
   CONTENT: "/content",
   MICRO_LEARNING: "/micro-learning",
-  CONTENT_TO_REEL: "/",
+  CONTENT_TO_REEL: "/edu-reels",
   CONTENT_CREATION: "/content-creation",
   CONTENT_DETAILS: "/content/:id",
-  HOW_TO_USE: "/how-to-use",
+  HOW_TO_USE: "/",
   NOT_FOUND: "*",
 };
