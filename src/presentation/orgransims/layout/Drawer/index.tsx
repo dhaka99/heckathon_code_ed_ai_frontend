@@ -217,6 +217,19 @@ const Drawer: React.FC = () => {
           />
         ),
       },
+      {
+        name: "How to Use",
+        isFolder: false,
+        link: ROUTES.HOW_TO_USE,
+        isActive: ROUTES.HOW_TO_USE === location.pathname,
+        isOpen: false,
+        icon: (
+          <LibraryBooksIcon
+            fontSize="large"
+            sx={{ color: theme.palette.neutral.main }}
+          />
+        ),
+      },
     ],
     [location.pathname]
   );

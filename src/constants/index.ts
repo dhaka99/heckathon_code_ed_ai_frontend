@@ -10,5 +10,6 @@ export const ROUTES = {
   CONTENT_TO_REEL: "/",
   CONTENT_CREATION: "/content-creation",
   CONTENT_DETAILS: "/content/:id",
+  HOW_TO_USE: "/how-to-use",
   NOT_FOUND: "*",
 };
